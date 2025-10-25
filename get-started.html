@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Get Started — DRP</title>
+<link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+<nav class="nav">
+  <div class="brand">
+    <div class="logo"></div>
+    <span>Desert Rose Partners</span>
+  </div>
+  <div class="links">
+    <a href="index.html">Home</a>
+    <a href="how-it-works.html">How it Works</a>
+    <a href="calculator.html">Earnings Estimator</a>
+    <a href="get-started.html">Get Started</a>
+  </div>
+</nav>
+<section class="hero container fade-in">
+  <div>
+    <div class="badge">Takes 2 minutes</div>
+    <h1>Get Started</h1>
+    <p>Tell us the basics. We’ll follow up with a clear, written next step.</p>
+  </div>
+  <img src="assets/img/banner-start.svg" alt="Get started banner">
+</section>
+
+<div class="container section">
+  <form id="start-form" class="card p">
+    <div class="row">
+      <div>
+        <label for="fullname">Full name</label>
+        <input id="fullname" name="fullname" placeholder="e.g., Ahmed Ben Youssef" required>
+      </div>
+      <div>
+        <label for="email">Email</label>
+        <input id="email" name="email" type="email" placeholder="name@example.com" required>
+      </div>
+    </div>
+    <div class="row" style="margin-top:1rem">
+      <div>
+        <label for="whatsapp">WhatsApp</label>
+        <input id="whatsapp" name="whatsapp" placeholder="+212 6 .. .. .. ..">
+      </div>
+      <div>
+        <label for="available">Available from</label>
+        <input id="available" name="available" type="date">
+      </div>
+    </div>
+    <div class="row" style="margin-top:1rem">
+      <div>
+        <label for="address">Property address</label>
+        <input id="address" name="address" placeholder="Street, building, unit">
+      </div>
+      <div>
+        <label for="city">City</label>
+        <input id="city" name="city" placeholder="Marrakech">
+      </div>
+    </div>
+    <div class="row" style="margin-top:1rem">
+      <div>
+        <label for="unittype">Unit type</label>
+        <select id="unittype" name="unittype">
+          <option>Studio</option>
+          <option>1BR</option>
+          <option>2BR</option>
+          <option>3BR+</option>
+          <option>Villa</option>
+        </select>
+      </div>
+      <div>
+        <label for="bedrooms">Bedrooms</label>
+        <input id="bedrooms" name="bedrooms" type="number" min="0" value="1">
+      </div>
+    </div>
+    <div class="row" style="margin-top:1rem">
+      <div>
+        <label for="elevator">Elevator</label>
+        <select id="elevator" name="elevator">
+          <option>Yes</option>
+          <option>No</option>
+        </select>
+      </div>
+      <div>
+        <label for="hoa">HOA</label>
+        <select id="hoa" name="hoa">
+          <option>Yes</option>
+          <option>No</option>
+        </select>
+      </div>
+    </div>
+    <div style="margin-top:1rem">
+      <label for="notes">Notes</label>
+      <textarea id="notes" name="notes" rows="5" placeholder="Anything we should know? e.g. building rules, parking, special access"></textarea>
+    </div>
+    <div style="margin-top:1rem;display:flex;gap:.75rem">
+      <button class="btn" type="submit">Send</button>
+      <button class="btn secondary" type="button" onclick="window.print()">Print</button>
+    </div>
+    <p class="note" style="margin-top:1rem">The Send button opens your email app with your answers filled in (mailto). No extra setup.</p>
+  </form>
+</div>
+
+<footer class="footer"><div class="container">
+  © Desert Rose Partners — Owners Onboarding
+</div></footer>
+<script src="assets/js/site.js"></script>
+</body>
+</html>
