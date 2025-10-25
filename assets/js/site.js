@@ -1,63 +1,13 @@
-// Shared interactions for Owners Onboarding
-function $(sel,ctx){return (ctx||document).querySelector(sel)}
-function $all(sel,ctx){return [...(ctx||document).querySelectorAll(sel)]}
-
-function navActive(){
-  const p = location.pathname.split('/').pop() || 'index.html';
-  $all('nav .links a').forEach(a=>{
-    const href = a.getAttribute('href');
-    if(href === p){ a.style.opacity = '1'; a.style.textDecoration = 'underline'; }
-  });
-}
-
-// Calculator
-function calcEstimate(){
-  const adr = parseFloat($('#adr')?.value || 600);
-  const occ = parseFloat($('#occ')?.value || 60)/100;
-  const fee = parseFloat($('#fee')?.value || 22)/100;
-  const utils = parseFloat($('#utils')?.value || 1000);
-  const nights = 30;
-  const gross = Math.round(adr*occ*nights);
-  const feeMAD = Math.round(gross*fee);
-  const ownerNet = Math.round(gross - feeMAD - utils);
-  const fmt = (n)=>n.toLocaleString('en-US');
-
-  if($('#kpi-gross')) $('#kpi-gross').textContent = fmt(gross);
-  if($('#kpi-fee')) $('#kpi-fee').textContent = fmt(feeMAD);
-  if($('#kpi-owner')) $('#kpi-owner').textContent = fmt(ownerNet);
-}
-
-// Get Started form → mailto
-function wireForm(){
-  const form = $('#start-form');
-  if(!form) return;
-  form.addEventListener('submit', (e)=>{
-    e.preventDefault();
-    const data = Object.fromEntries(new FormData(form).entries());
-    const subject = encodeURIComponent(`Owner Onboarding — ${data.fullname || 'New Lead'}`);
-    const lines = [
-      `Full name: ${data.fullname||''}`,
-      `Email: ${data.email||''}`,
-      `WhatsApp: ${data.whatsapp||''}`,
-      `Property address: ${data.address||''}`,
-      `City: ${data.city||''}`,
-      `Unit type: ${data.unittype||''}`,
-      `Bedrooms: ${data.bedrooms||''}`,
-      `Elevator: ${data.elevator||''}`,
-      `HOA: ${data.hoa||''}`,
-      `Available from: ${data.available||''}`,
-      `Notes: ${data.notes||''}`
-    ];
-    const body = encodeURIComponent(lines.join('\n'));
-    // Default email; can be baked into a custom ZIP later.
-    const to = 'owners@example.com';
-    location.href = `mailto:${to}?subject=${subject}&body=${body}`;
-  });
-}
-
-window.addEventListener('DOMContentLoaded', ()=>{
-  navActive();
-  const calcBtn = $('#calc');
-  if(calcBtn){ calcBtn.addEventListener('click', calcEstimate); calcEstimate(); }
-  wireForm();
-});
+const $=(s,c=document)=>c.querySelector(s); const $$=(s,c=document)=>[...c.querySelectorAll(s)];
+function navActive(){const p=location.pathname.split('/').pop()||'index.html'; $$('.links a').forEach(a=>{a.style.opacity=(a.getAttribute('href')===p)?'1':'.85'; a.style.textDecoration=(a.getAttribute('href')===p)?'underline':'none';});}
+function fmt(n){return Number(n||0).toLocaleString('en-US');}
+function baselineFrom(neigh,unit){const d=window.DRP_DATA; const n=d.neighborhoods[neigh]&&d.neighborhoods[neigh][unit]; if(!n) return {adr:600,occ:0.6,avg_stay_nights:3.0}; return n;}
+function opsAdjustments(selected){const d=window.DRP_DATA.ops_stops; let feeBump=0,varBump=0; selected.forEach(k=>{if(d[k]){feeBump+=d[k].fee_bump_pct||0; varBump+=d[k].var_per_stay_bump||0;}}); return {feeBump,varBump};}
+function turnoversPerMonth(occ,avgStay){const nights=30*occ; return Math.max(1, Math.round(nights/Math.max(1,avgStay)));}
+function cohostEstimate({neigh,unit,adr,occPct,baseFeePct,fixed,ops,includeFixed}){const base=baselineFrom(neigh,unit); const occ=(occPct||(base.occ*100))/100; const nights=30; const gross=Math.round((adr||base.adr)*occ*nights); const {feeBump,varBump}=opsAdjustments(ops); const feePct=(baseFeePct||DRP_DATA.cohost_base_fee_pct)+feeBump; const stays=turnoversPerMonth(occ, base.avg_stay_nights); const d=DRP_DATA.variable_per_stay; const varPerStay=(d.cleaning[unit]||150)+d.restock+d.linen+varBump; const variable=Math.round(stays*varPerStay); const fixedMonthly=includeFixed?(fixed.internet+fixed.insurance+fixed.hoa):0; const feeMAD=Math.round(gross*(feePct/100)); const ownerNet=Math.round(gross-feeMAD-variable-fixedMonthly); return {gross,feePct,feeMAD,stays,variable,fixedMonthly,ownerNet};}
+function leaseEstimate({neigh,unit,adr,occPct,includeFixed,ops,targetMarginPct}){const base=baselineFrom(neigh,unit); const fixed=DRP_DATA.fixed_expenses; const baseFeePct=DRP_DATA.cohost_base_fee_pct; const co=cohostEstimate({neigh,unit,adr:adr||base.adr,occPct:occPct||(base.occ*100),baseFeePct,fixed,ops,includeFixed}); const marginMAD=Math.round((targetMarginPct/100)*co.gross); let rentCap=Math.max(0, co.gross - co.variable - (includeFixed?co.fixedMonthly:0) - marginMAD); const {feeBump}=opsAdjustments(ops); const penaltyPct=Math.min(10, feeBump); rentCap=Math.round(rentCap*(1-penaltyPct/100)); const offerLow=Math.round(rentCap*0.95); const offerHigh=Math.round(rentCap*1.05); const suggested=Math.max(0,offerLow); return {gross:co.gross,stays:co.stays,variable:co.variable,fixedMonthly:includeFixed?co.fixedMonthly:0,marginMAD,rentCap,offerLow,offerHigh,suggested};}
+function readOps(c){return $$('input[type=checkbox][data-op]:checked',c).map(i=>i.dataset.op);}
+function readFixed(c){return {internet: $('#fx-internet',c)?.checked?DRP_DATA.fixed_expenses.internet:0, insurance: $('#fx-insurance',c)?.checked?DRP_DATA.fixed_expenses.insurance:0, hoa: $('#fx-hoa',c)?.checked?DRP_DATA.fixed_expenses.hoa:0};}
+function wireCohostPage(kind){navActive(); const form=$('#calc-form'); const neighSel=$('#neigh'), unitSel=$('#unit'); const adrInput=$('#adr'), occInput=$('#occ'); const feeBase=DRP_DATA.cohost_base_fee_pct; function syncBaseline(){const base=baselineFrom(neighSel.value,unitSel.value); if(!adrInput.dataset.touched) adrInput.value=base.adr; if(!occInput.dataset.touched) occInput.value=Math.round(base.occ*100); $('#avgstay').textContent=base.avg_stay_nights.toFixed(1);} ['change','input'].forEach(ev=>{adrInput.addEventListener(ev,()=>adrInput.dataset.touched=true); occInput.addEventListener(ev,()=>occInput.dataset.touched=true);}); neighSel.addEventListener('change',syncBaseline); unitSel.addEventListener('change',syncBaseline); syncBaseline(); function run(){const ops=readOps(form); const fixed=readFixed(form); const res=cohostEstimate({neigh:neighSel.value, unit:unitSel.value, adr:parseFloat(adrInput.value), occPct:parseFloat(occInput.value), baseFeePct:feeBase, fixed, ops, includeFixed:true}); $('#kpi-gross').textContent=fmt(res.gross); $('#kpi-fee').textContent=`${res.feePct.toFixed(0)}% → ${fmt(res.feeMAD)}`; $('#kpi-stays').textContent=fmt(res.stays); $('#kpi-variable').textContent=fmt(res.variable); $('#kpi-fixed').textContent=fmt(res.fixedMonthly); $('#kpi-owner').textContent=fmt(res.ownerNet);} form.addEventListener('input',run); $('#calc').addEventListener('click',run); run();}
+function wireLeasePage(kind){navActive(); const form=$('#calc-form'); const neighSel=$('#neigh'), unitSel=$('#unit'); const adrInput=$('#adr'), occInput=$('#occ'), marginInput=$('#margin'); function syncBaseline(){const base=baselineFrom(neighSel.value,unitSel.value); if(!adrInput.dataset.touched) adrInput.value=base.adr; if(!occInput.dataset.touched) occInput.value=Math.round(base.occ*100); $('#avgstay').textContent=base.avg_stay_nights.toFixed(1);} ['change','input'].forEach(ev=>{adrInput.addEventListener(ev,()=>adrInput.dataset.touched=true); occInput.addEventListener(ev,()=>occInput.dataset.touched=true);}); neighSel.addEventListener('change',syncBaseline); unitSel.addEventListener('change',syncBaseline); syncBaseline(); function run(){const ops=readOps(form); const fixed=readFixed(form); const res=leaseEstimate({neigh:neighSel.value, unit:unitSel.value, adr:parseFloat(adrInput.value), occPct:parseFloat(occInput.value), includeFixed:true, ops, targetMarginPct:parseFloat(marginInput.value||DRP_DATA.lease_target_margin_pct)}); $('#kpi-gross').textContent=fmt(res.gross); $('#kpi-stays').textContent=fmt(res.stays); $('#kpi-variable').textContent=fmt(res.variable); $('#kpi-fixed').textContent=fmt(res.fixedMonthly); $('#kpi-margin').textContent=fmt(res.marginMAD); $('#kpi-rent').textContent=`${fmt(res.offerLow)}–${fmt(res.offerHigh)}`; $('#kpi-suggested').textContent=fmt(res.suggested);} form.addEventListener('input',run); $('#calc').addEventListener('click',run); run();}
+window.addEventListener('DOMContentLoaded', ()=>{const page=document.body.dataset.page; if(page==='cohost-fur'||page==='cohost-unfur'){wireCohostPage(page==='cohost-fur'?'furnished':'unfurnished');} else if(page==='lease-fur'||page==='lease-unfur'){wireLeasePage(page==='lease-fur'?'furnished':'unfurnished');} else {navActive();}});
