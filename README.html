@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Branching Steps — Web-Only</title>
+<link rel="stylesheet" href="assets/css/styles.css">
+</head><body>
+<nav class="nav"><div class="brand"><div class="logo"></div><span>Desert Rose Partners</span></div>
+<div class="links"><a href="index.html">Home</a></div></nav>
+<div class="container section">
+  <h1>Branch & Pull Request (Web-Only)</h1>
+  <p>Any time we add pages or change text, we’ll do it on a branch so you can preview and revert easily.</p>
+  <ol>
+    <li><strong>Create a branch while uploading</strong>
+      <ul>
+        <li>Open your repo on GitHub → <em>Add file → Upload files</em> → drag the new files.</li>
+        <li>Below the file list, choose <em>Create a new branch</em> and name it like <code>feature/offer-suite-v2</code>.</li>
+        <li>Click <em>Propose changes</em> (or <em>Commit changes</em>).</li>
+      </ul>
+    </li>
+    <li><strong>Open a Pull Request</strong>
+      <ul>
+        <li>GitHub will show “Compare &amp; pull request.” Click it.</li>
+        <li>Add a short title, e.g., “Offer Suite v2.”</li>
+        <li>Click <em>Create pull request</em>.</li>
+      </ul>
+    </li>
+    <li><strong>Preview via GitHub Pages (optional)</strong>
+      <ul>
+        <li>Pages can only publish one branch at a time. To preview without switching, open the PR and browse the changed files; or temporarily switch Pages to your branch, then switch back after testing.</li>
+      </ul>
+    </li>
+    <li><strong>Merge</strong>
+      <ul>
+        <li>When happy, click <em>Merge pull request</em> → <em>Confirm</em>.</li>
+        <li>If your Pages is set to <code>main</code>, it will redeploy with the new files.</li>
+      </ul>
+    </li>
+    <li><strong>Rollback if needed</strong>
+      <ul>
+        <li>Go to <em>Pull requests</em> → find the PR → click <em>Revert</em> (GitHub creates a new PR that undoes changes). Merge it.</li>
+      </ul>
+    </li>
+  </ol>
+  <div class="note">We’ll call out “Branch here” every time we deliver a new ZIP.</div>
+</div>
+</body></html>
