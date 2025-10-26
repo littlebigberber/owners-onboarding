@@ -18,18 +18,18 @@
     <a href="README.html">Branching Steps</a>
   </div>
 </nav>
-<section class="hero container fade-in">
+<section class="hero container">
   <div>
-    <div class="badge">Live estimate</div>
+    <div class="badge">Owner input — minimal</div>
     <h1>Lease to Us — Furnished</h1>
-    <p>Select neighborhood and unit, tweak ADR and occupancy, mark Ops Stops, include fixed costs, then Calculate.</p>
+    <p>Select neighborhood and unit, mark Ops Stops, then Calculate. We use baselines for ADR & occupancy.</p>
     <button class="btn print-btn" onclick="window.print()">Print</button>
   </div>
-  <img src="assets/img/banner-cohost.svg" alt="Estimator banner">
+  <img src="assets/img/banner-lease.svg" alt="Lease estimator banner">
 </section>
 
 <div class="container section">
-  <form id="calc-form" class="card p">
+  <form id="calc-form" class="note">
     <div class="row">
       <div>
         <label for="neigh">Neighborhood</label>
@@ -51,43 +51,15 @@
       </div>
     </div>
 
-    <div class="row" style="margin-top:1rem">
-      <div>
-        <label for="adr">ADR (nightly rate, MAD)</label>
-        <input id="adr" type="number" min="0">
-        <small class="help">Default loads from neighborhood baseline.</small>
-      </div>
-      <div>
-        <label for="occ">Occupancy (%)</label>
-        <input id="occ" type="number" min="0" max="100">
-        <small class="help">Default loads from neighborhood baseline.</small>
-      </div>
-    </div>
-
     <div style="margin-top:1rem">
-      <strong>Ops Stops</strong>
+      <strong>Ops Stops (check only if common)</strong>
       <div class="ops">
-  <label><input type="checkbox" data-op="noise_sensitive"> Noise-sensitive building</label>
-  <label><input type="checkbox" data-op="no_elevator"> No elevator</label>
-  <label><input type="checkbox" data-op="late_checkins"> Frequent late check-ins</label>
-  <label><input type="checkbox" data-op="parking_difficult"> Parking difficult</label>
-  <label><input type="checkbox" data-op="pets_allowed"> Pets allowed</label>
+  <label title="Building where noise complaints are likely"><input type="checkbox" data-op="noise_sensitive"> Noise-sensitive building</label>
+  <label title="No elevator to reach the unit"><input type="checkbox" data-op="no_elevator"> No elevator</label>
+  <label title="We accept arrivals after 10–11pm regularly"><input type="checkbox" data-op="late_checkins"> We accept late-night check-ins</label>
+  <label title="Street/garage situation makes parking hard"><input type="checkbox" data-op="parking_difficult"> Parking is difficult</label>
+  <label title="We accept pets regularly"><input type="checkbox" data-op="pets_allowed"> We accept pets</label>
 </div>
-    </div>
-
-    <div class="row" style="margin-top:1rem">
-      <div><label><input id="fx-internet" type="checkbox" checked> Include Internet (MAD 300)</label></div>
-      <div><label><input id="fx-insurance" type="checkbox" checked> Include Insurance (MAD 120)</label></div>
-    </div>
-    <div style="margin-top:.5rem">
-      <label><input id="fx-hoa" type="checkbox"> Include HOA (owner-provided)</label>
-    </div>
-
-    <div class="assumptions">
-      <details>
-        <summary>Show assumptions</summary>
-        <p>Average stay length: <strong id="avgstay">3.0</strong> nights. Per-stay costs include cleaning, restock, and linen.</p>
-      </details>
     </div>
 
     <div style="margin-top:1rem">
@@ -95,31 +67,30 @@
     </div>
   </form>
 </div>
-<div class="container section">
-  <h2>Lease-to-Us — Rent Offer Model</h2>
-  <div class="row">
-    <div>
-      <label for="margin">Target Margin (% of gross)</label>
-      <input id="margin" type="number" value="10" min="0" max="30">
-      <small class="help">We aim for a modest buffer to handle ops risk.</small>
-    </div>
+
+<div class="container">
+  <div class="headline note">
+    <div class="k">Suggested rent (offer, MAD)</div>
+    <div class="v" id="headline-val">0</div>
   </div>
-  <div style="margin-top:1rem"></div>
-  <table class="table">
-    <tr><th>Gross (ADR × nights × occ)</th><td id="kpi-gross">0</td></tr>
-    <tr><th>Expected stays / month</th><td id="kpi-stays">0</td></tr>
-    <tr><th>Variable expenses (per stay)</th><td id="kpi-variable">0</td></tr>
-    <tr><th>Fixed expenses (internet, insurance, HOA)</th><td id="kpi-fixed">0</td></tr>
-    <tr><th>Target margin (MAD)</th><td id="kpi-margin">0</td></tr>
-    <tr><th>Rent cap (after ops penalties)</th><td id="kpi-rent">0</td></tr>
-    <tr><th><strong>Suggested rent (offer)</strong></th><td id="kpi-suggested">0</td></tr>
-  </table>
-  <div class="note" style="margin-top:1rem">
-    Ops Stops reduce the rent cap slightly (we take on more effort/risk). Use this as a starting point for negotiation.
-  </div>
+
+  <details class="note" style="margin-top:1rem">
+    <summary>Show details (optional)</summary>
+    <table class="table" style="margin-top:.5rem">
+      <tr><th>Gross</th><td id="d-gross">0</td></tr>
+      <tr><th>Expected stays / month</th><td id="d-stays">0</td></tr>
+      <tr><th>Variable expenses (per stay)</th><td id="d-variable">0</td></tr>
+      <tr><th>Fixed expenses (assumed)</th><td id="d-fixed">0</td></tr>
+      <tr><th>Target margin</th><td id="d-margin">0</td></tr>
+      <tr><th>Rent cap (after ops penalties)</th><td id="d-rentcap">0</td></tr>
+      <tr><th>Avg stay (nights)</th><td id="d-avgstay">0</td></tr>
+    </table>
+    <small class="help">We’ll confirm exact utilities/fees before finalizing.</small>
+  </details>
 </div>
+
 <footer class="footer"><div class="container">
-  © Desert Rose Partners — Owner Offer Suite v2.1
+  © Desert Rose Partners — Owner Offer Suite v2.4
 </div></footer>
 <script src="assets/js/data.js"></script>
 <script src="assets/js/site.js"></script>
