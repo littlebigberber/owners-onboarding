@@ -1,13 +1,7 @@
-<!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Lease to Us — Furnished — DRP</title>
-<link rel="stylesheet" href="assets/css/styles.css">
-</head>
-<body data-page="lease-fur">
-<nav class="nav">
+<!doctype html><html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Lease to Us — Furnished — DRP</title><link rel="stylesheet" href="assets/css/styles.css"></head>
+<body data-page="lease-fur"><nav class="nav">
   <div class="brand"><div class="logo"></div><span>Desert Rose Partners</span></div>
   <div class="links">
     <a href="index.html">Home</a>
@@ -18,81 +12,39 @@
     <a href="README.html">Branching Steps</a>
   </div>
 </nav>
-<section class="hero container">
-  <div>
-    <div class="badge">Owner input — minimal</div>
-    <h1>Lease to Us — Furnished</h1>
-    <p>Select neighborhood and unit, mark Ops Stops, then Calculate. We use baselines for ADR & occupancy.</p>
-    <button class="btn print-btn" onclick="window.print()">Print</button>
-  </div>
-  <img src="assets/img/banner-lease.svg" alt="Lease estimator banner">
-</section>
-
+<section class="hero container"><div>
+  <h1>Lease to Us — Furnished</h1><p>Select neighborhood & unit, tick Ops Stops, then Calculate. Lease uses fractional stays so costs move smoothly.</p>
+  <button class="btn print-btn" onclick="window.print()">Print</button>
+</div><img src="assets/img/banner-lease.svg" alt="Lease estimator banner"></section>
 <div class="container section">
   <form id="calc-form" class="note">
     <div class="row">
-      <div>
-        <label for="neigh">Neighborhood</label>
-        <select id="neigh">
-          <option>Gueliz</option>
-          <option>Hivernage</option>
-          <option>Medina (car-accessible)</option>
-          <option>Palmeraie</option>
-          <option>Outskirts/Other</option>
-        </select>
-      </div>
-      <div>
-        <label for="unit">Unit</label>
-        <select id="unit">
-          <option>Studio</option>
-          <option>1BR</option>
-          <option>2BR</option>
-        </select>
-      </div>
+      <div><label for="neigh">Neighborhood</label>
+        <select id="neigh"><option>Gueliz</option><option>Hivernage</option><option>Medina (car-accessible)</option><option>Palmeraie</option><option>Outskirts/Other</option></select></div>
+      <div><label for="unit">Unit</label>
+        <select id="unit"><option>Studio</option><option>1BR</option><option>2BR</option></select></div>
     </div>
-
-    <div style="margin-top:1rem">
-      <strong>Ops Stops (check only if common)</strong>
-      <div class="ops">
-  <label title="Building where noise complaints are likely"><input type="checkbox" data-op="noise_sensitive"> Noise-sensitive building</label>
-  <label title="No elevator to reach the unit"><input type="checkbox" data-op="no_elevator"> No elevator</label>
-  <label title="We accept arrivals after 10–11pm regularly"><input type="checkbox" data-op="late_checkins"> We accept late-night check-ins</label>
-  <label title="Street/garage situation makes parking hard"><input type="checkbox" data-op="parking_difficult"> Parking is difficult</label>
-  <label title="We accept pets regularly"><input type="checkbox" data-op="pets_allowed"> We accept pets</label>
-</div>
-    </div>
-
-    <div style="margin-top:1rem">
-      <button id="calc" type="button" class="btn">Calculate</button>
-    </div>
+    <div style="margin-top:1rem"><strong>Ops Stops (check only if common)</strong><div id="ops-host" class="ops"></div></div>
+    
+    <div style="margin-top:1rem"><button id="calc" type="button" class="btn">Calculate</button></div>
   </form>
+  <details class="note" style="margin-top:1rem"><summary>About this page</summary>
+<p>Lease uses <strong>fractional stays</strong> so costs slide smoothly (no odd jumps). Ops apply to ADR & Occupancy first, then we subtract variable costs, fixed costs, furnishing amortization (if included), and margin to get the rent cap.</p>
+</details>
 </div>
-
 <div class="container">
-  <div class="headline note">
-    <div class="k">Suggested rent (offer, MAD)</div>
-    <div class="v" id="headline-val">0</div>
-  </div>
-
-  <details class="note" style="margin-top:1rem">
-    <summary>Show details (optional)</summary>
+  <div class="headline note"><div class="k">Suggested rent (offer, MAD)</div><div class="v" id="headline-val">0</div></div>
+  <details class="note" style="margin-top:1rem"><summary>Show details (optional)</summary>
     <table class="table" style="margin-top:.5rem">
       <tr><th>Gross</th><td id="d-gross">0</td></tr>
       <tr><th>Expected stays / month</th><td id="d-stays">0</td></tr>
       <tr><th>Variable expenses (per stay)</th><td id="d-variable">0</td></tr>
       <tr><th>Fixed expenses (assumed)</th><td id="d-fixed">0</td></tr>
+      
       <tr><th>Target margin</th><td id="d-margin">0</td></tr>
-      <tr><th>Rent cap (after ops penalties)</th><td id="d-rentcap">0</td></tr>
+      <tr><th>Rent cap</th><td id="d-rentcap">0</td></tr>
       <tr><th>Avg stay (nights)</th><td id="d-avgstay">0</td></tr>
     </table>
-    <small class="help">We’ll confirm exact utilities/fees before finalizing.</small>
   </details>
 </div>
-
-<footer class="footer"><div class="container">
-  © Desert Rose Partners — Owner Offer Suite v2.4
-</div></footer>
-<script src="assets/js/data.js"></script>
-<script src="assets/js/site.js"></script>
-</body>
-</html>
+<footer class="footer"><div class="container">© Desert Rose Partners — Owner Offer Suite v2.7</div></footer><script src="assets/js/data.js"></script><script src="assets/js/site.js"></script></body></html>
