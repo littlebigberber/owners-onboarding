@@ -1,0 +1,154 @@
+
+<!doctype html><html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Cohost — Unfurnished — DRP</title>
+<link rel="stylesheet" href="assets/styles.css"/>
+<script src="assets/baselines.js"></script>
+<script src="assets/app.js"></script>
+</head>
+<body>
+<div class="container">
+  <nav>
+    <strong>Desert Rose Partners</strong>
+    <a href="index.html">Home</a>
+    <a href="cohost-furnished.html">Cohost — Furnished</a>
+    <a href="cohost-unfurnished.html">Cohost — Unfurnished</a>
+    <a href="lease-furnished.html">Lease to Us — Furnished</a>
+    <a href="lease-unfurnished.html">Lease to Us — Unfurnished</a>
+  </nav>
+  <h1>Cohost — Unfurnished</h1>
+
+<div class="grid">
+  <div class="card">
+    <div class="label">Neighborhood & Unit</div>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px">
+      <select id="neighborhood"></select>
+      <select id="unit"></select>
+    </div>
+    <div class="small" style="margin-top:8px">ADR & occupancy load from neighborhood baselines automatically.</div>
+
+    <div class="hr"></div>
+    <div class="label">Fixed costs (monthly)</div>
+    <div style="display:grid; grid-template-columns: auto 1fr; gap:8px; align-items:center">
+      <label><input id="internet_on" type="checkbox" checked>Internet</label>
+      <input id="internet_val" type="number" step="10" value="300"/>
+      <label><input id="insurance_on" type="checkbox" checked>Insurance</label>
+      <input id="insurance_val" type="number" step="10" value="120"/>
+      <label><input id="hoa_on" type="checkbox">HOA</label>
+      <input id="hoa_val" type="number" step="10" value="0"/>
+    </div>
+
+    <div class="hr"></div>
+    <div class="label">Cohost fee %</div>
+    <input id="fee_pct" type="number" step="1" value="22"/>
+
+    <div class="hr"></div>
+    <div class="label">Furnishing (reference only — does not affect math)</div>
+    <input id="furnish_ref" type="number" step="100" value="30000"/>
+    <div class="small">Cohost assumes owner furnishes; this is only a reference list value.</div>
+
+    <div class="hr"></div>
+    <button class="btn" id="calc">Calculate</button>
+  </div>
+
+  <div class="card">
+    <div class="label">Ops Stops (check if common)</div>
+    <div class="ops">
+      <label><input id="op_noise" type="checkbox">Noise‑sensitive building</label>
+      <label><input id="op_stairs" type="checkbox">Stairs only (no elevator)</label>
+      <label><input id="op_parking" type="checkbox">Parking is difficult</label>
+      <label><input id="op_hoa" type="checkbox">Strict HOA / building rules</label>
+      <label><input id="op_gated" type="checkbox">Gated/complex access</label>
+      <label><input id="op_maze" type="checkbox">Hard‑to‑find address / maze‑like</label>
+      <label><input id="op_no_self" type="checkbox">No self check‑in (handoff)</label>
+      <label><input id="op_delicate" type="checkbox">Delicate finishes (extra care)</label>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="label">Owner Net (estimated)</div>
+    <table class="table kpis">
+      <tbody>
+        <tr><th>Gross (ADR × nights × occ)</th><td id="k_gross">—</td></tr>
+        <tr><th>Expected stays / month</th><td id="k_stays">—</td></tr>
+        <tr><th>Variable expenses (per stay × stays)</th><td id="k_var">—</td></tr>
+        <tr><th>Cohost Fee</th><td id="k_fee">—</td></tr>
+        <tr><th>Fixed expenses</th><td id="k_fixed">—</td></tr>
+        <tr><th>Owner Net</th><td id="k_owner">—</td></tr>
+        <tr><th>BASE Owner Net (baseline ADR/Occ)</th><td id="k_base">—</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+(function(){
+  const BASE = window.DRP_BASELINES;
+  const DRP = window.DRP;
+
+  const selN = document.getElementById('neighborhood');
+  const selU = document.getElementById('unit');
+
+  DRP.populateSelect(selN, BASE);
+  DRP.populateSelect(selU, BASE[Object.keys(BASE)[0]]);
+  selN.addEventListener('change', ()=> DRP.populateSelect(selU, BASE[selN.value]));
+
+  function getChecks(){
+    return {
+      noise: op_noise.checked, stairs: op_stairs.checked, parking: op_parking.checked,
+      hoa: op_hoa.checked, gated: op_gated.checked, maze: op_maze.checked,
+      no_self: op_no_self.checked, delicate: op_delicate.checked
+    };
+  }
+
+  function fixedCosts(){
+    let total = 0;
+    if(internet_on.checked) total += Number(internet_val.value||0);
+    if(insurance_on.checked) total += Number(insurance_val.value||0);
+    if(hoa_on.checked) total += Number(hoa_val.value||0);
+    return total;
+  }
+
+  function run(){
+    const row = BASE[selN.value][selU.value];
+    const checks = getChecks();
+
+    const adj = DRP.applyOps(row.adr, row.occ, checks);
+    const stays = DRP.expectedStays(adj.occ, DRP.DEFAULT_AVG_NIGHTS);
+    const gross = adj.adr * DRP.DEFAULT_AVG_NIGHTS * stays;
+
+    const varPerStay = DRP.UNIT_VAR_COST[selU.value] ?? 200;
+    const varTotal = varPerStay * stays;
+
+    const fee = gross * (Number(fee_pct.value||0)/100);
+    const fixed = fixedCosts();
+
+    const owner = gross - varTotal - fee - fixed;
+
+    // Base owner net without ops
+    const staysBase = DRP.expectedStays(row.occ, DRP.DEFAULT_AVG_NIGHTS);
+    const grossBase = row.adr * DRP.DEFAULT_AVG_NIGHTS * staysBase;
+    const varBase = varPerStay * staysBase;
+    const feeBase = grossBase * (Number(fee_pct.value||0)/100);
+    const baseOwner = grossBase - varBase - feeBase - fixed;
+
+    k_gross.textContent = DRP.fmt(gross);
+    k_stays.textContent = stays.toFixed(1);
+    k_var.textContent   = `${DRP.fmt(varTotal)} (per stay ${DRP.fmt(varPerStay)})`;
+    k_fee.textContent   = DRP.fmt(fee);
+    k_fixed.textContent = DRP.fmt(fixed);
+    k_owner.textContent = DRP.fmt(owner);
+    k_base.textContent  = DRP.fmt(baseOwner);
+  }
+
+  calc.addEventListener('click', run);
+  run();
+})();
+</script>
+
+</div>
+</body>
+</html>
+

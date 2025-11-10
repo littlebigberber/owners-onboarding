@@ -1,0 +1,134 @@
+
+<!doctype html><html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Lease to Us — Unfurnished — DRP</title>
+<link rel="stylesheet" href="assets/styles.css"/>
+<script src="assets/baselines.js"></script>
+<script src="assets/app.js"></script>
+</head>
+<body>
+<div class="container">
+  <nav>
+    <strong>Desert Rose Partners</strong>
+    <a href="index.html">Home</a>
+    <a href="cohost-furnished.html">Cohost — Furnished</a>
+    <a href="cohost-unfurnished.html">Cohost — Unfurnished</a>
+    <a href="lease-furnished.html">Lease to Us — Furnished</a>
+    <a href="lease-unfurnished.html">Lease to Us — Unfurnished</a>
+  </nav>
+  <h1>Lease to Us — Unfurnished</h1>
+
+<div class="grid">
+  <div class="card">
+    <div class="label">Neighborhood & Unit</div>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px">
+      <select id="neighborhood"></select>
+      <select id="unit"></select>
+    </div>
+
+    <div class="hr"></div>
+    <div class="label">Include furnishing amortization</div>
+    <label><input id="amort_on" type="checkbox" checked> Amortize</label>
+    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px; margin-top:8px">
+      <div>
+        <div class="label">Budget (MAD)</div>
+        <input id="amort_budget" type="number" step="100" value="30000"/>
+      </div>
+      <div>
+        <div class="label">Months</div>
+        <input id="amort_months" type="number" step="1" value="24"/>
+      </div>
+    </div>
+    <div class="small">Tip: uncheck if owner furnishes (you don’t finance).</div>
+
+    <div class="hr"></div>
+    <button class="btn" id="calc">Calculate</button>
+  </div>
+
+  <div class="card">
+    <div class="label">Ops Stops (check if common)</div>
+    <div class="ops">
+      <label><input id="op_noise" type="checkbox">Noise‑sensitive building</label>
+      <label><input id="op_stairs" type="checkbox">Stairs only (no elevator)</label>
+      <label><input id="op_parking" type="checkbox">Parking is difficult</label>
+      <label><input id="op_hoa" type="checkbox">Strict HOA / building rules</label>
+      <label><input id="op_gated" type="checkbox">Gated/complex access</label>
+      <label><input id="op_maze" type="checkbox">Hard‑to‑find address / maze‑like</label>
+      <label><input id="op_no_self" type="checkbox">No self check‑in (handoff)</label>
+      <label><input id="op_delicate" type="checkbox">Delicate finishes (extra care)</label>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="label">Suggested rent (offer)</div>
+    <table class="table kpis">
+      <tbody>
+        <tr><th>Gross</th><td id="k_gross">—</td></tr>
+        <tr><th>Expected stays / month</th><td id="k_stays">—</td></tr>
+        <tr><th>Variable expenses (per stay)</th><td id="k_var">—</td></tr>
+        <tr><th>Fixed expenses (assumed)</th><td id="k_fixed">—</td></tr>
+        <tr><th>Target margin</th><td id="k_margin">—</td></tr>
+        <tr><th>Rent cap (after ops penalties)</th><td id="k_cap">—</td></tr>
+        <tr><th>Avg stay (nights)</th><td>3.0</td></tr>
+        <tr><th class="label">Offer (95% × cap)</th><td id="k_offer" style="font-weight:700">—</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+(function(){
+  const BASE = window.DRP_BASELINES;
+  const DRP = window.DRP;
+
+  const selN = document.getElementById('neighborhood');
+  const selU = document.getElementById('unit');
+  DRP.populateSelect(selN, BASE);
+  DRP.populateSelect(selU, BASE[Object.keys(BASE)[0]]);
+  selN.addEventListener('change', ()=> DRP.populateSelect(selU, BASE[selN.value]));
+
+  function getChecks(){
+    return {
+      noise: op_noise.checked, stairs: op_stairs.checked, parking: op_parking.checked,
+      hoa: op_hoa.checked, gated: op_gated.checked, maze: op_maze.checked,
+      no_self: op_no_self.checked, delicate: op_delicate.checked
+    };
+  }
+
+  function run(){
+    const row = BASE[selN.value][selU.value];
+    const checks = getChecks();
+    const adj = DRP.applyOps(row.adr, row.occ, checks);
+    const stays = DRP.expectedStays(adj.occ, DRP.DEFAULT_AVG_NIGHTS);
+    const gross = adj.adr * DRP.DEFAULT_AVG_NIGHTS * stays;
+
+    const varPerStay = DRP.UNIT_VAR_COST[selU.value] ?? 200;
+    const varTotal = varPerStay * stays;
+
+    const amort = amort_on.checked ? (Number(amort_budget.value||0)/Math.max(1, Number(amort_months.value||0))) : 0;
+    const fixed = amort; // only amortization is counted as fixed for unfurnished lease
+
+    const margin = DRP.leaseTargetMargin(gross, checks);
+    const cap = DRP.rentCap(gross, varTotal, fixed, margin);
+    const offer = DRP.suggestedOffer(cap);
+
+    k_gross.textContent  = DRP.fmt(gross);
+    k_stays.textContent  = stays.toFixed(1);
+    k_var.textContent    = `${DRP.fmt(varPerStay)} (total ${DRP.fmt(varTotal)})`;
+    k_fixed.textContent  = DRP.fmt(fixed);
+    k_margin.textContent = DRP.fmt(margin);
+    k_cap.textContent    = DRP.fmt(cap);
+    k_offer.textContent  = DRP.fmt(offer);
+  }
+
+  calc.addEventListener('click', run);
+  run();
+})();
+</script>
+
+</div>
+</body>
+</html>
+
