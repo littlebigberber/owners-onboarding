@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Cohost — Unfurnished (compact)</title>
+<link rel="stylesheet" href="assets/style.css"/>
+</head>
+<body class="compact">
+  <div class="nav">
+    <div class="brand">Desert Rose Partners</div>
+    <a href="index.html">Home</a>
+    <a href="cohost-furnished.html">Cohost — Furnished</a>
+    <a href="cohost-unfurnished.html">Cohost — Unfurnished</a>
+    <a href="lease-furnished.html">Lease to Us — Furnished</a>
+    <a href="lease-unfurnished.html">Lease to Us — Unfurnished</a>
+  </div>
+
+  <div class="wrap">
+    
+    <h1>Cohost — Unfurnished</h1>
+    <div class="alert">Cohost assumes owner furnishes; the example budget below is just a reference and does not affect the math.</div>
+    
+<div class="grid-3">
+  <div class="panel">
+    <div class="card">
+      <h2>Neighborhood & Unit</h2>
+      <div class="row">
+        <div><small class="label">Neighborhood</small><select id="nb"></select></div>
+        <div><small class="label">Unit</small><select id="unit"></select></div>
+      </div>
+      <div class="alert" style="margin-top:10px">ADR & occupancy load from neighborhood baselines automatically.</div>
+    </div>
+    <div class="card">
+      <h2>Fixed costs (monthly)</h2>
+      <div class="row-3">
+        <label class="kpi"><input id="internet" type="checkbox" checked><span class="label">Internet</span></label>
+        <input id="internetAmt" type="number" value="300" min="0"/>
+        <div class="muted">MAD / month</div>
+      </div>
+      <div class="row-3">
+        <label class="kpi"><input id="insurance" type="checkbox" checked><span class="label">Insurance</span></label>
+        <input id="insuranceAmt" type="number" value="120" min="0"/>
+        <div class="muted">MAD / month</div>
+      </div>
+      <div class="row-3">
+        <label class="kpi"><input id="hoa" type="checkbox"><span class="label">HOA</span></label>
+        <input id="hoaAmt" type="number" value="0" min="0"/>
+        <div class="muted">MAD / month</div>
+      </div>
+      <div class="row" style="margin-top:8px">
+        <div><small class="label">Cohost fee %</small><input id="feePct" type="number" value="22" min="5" max="40"/></div>
+        <div></div>
+      </div>
+      <div style="margin-top:10px"><button id="calc" class="btn">Calculate</button></div>
+    </div>
+  </div>
+
+  <div class="card" id="opsBox">
+    <h2>Ops Stops (check if common)</h2>
+  </div>
+
+  <div class="card results">
+    <h2>Owner Net (estimated)</h2>
+    <div class="big" id="kOwner">—</div>
+    <div class="muted" style="margin:6px 0 10px">MAD / month</div>
+    <table>
+      <tr><td class="label">Gross (ADR × nights × occ)</td><td id="kGross">—</td></tr>
+      <tr><td class="label">Expected stays / month</td><td id="kStays">—</td></tr>
+      <tr><td class="label">Variable expenses (per stay × stays)</td><td id="kVar">—</td></tr>
+      <tr><td class="label">Cohost Fee</td><td id="kFee">—</td></tr>
+      <tr><td class="label">Fixed expenses</td><td id="kFixed">—</td></tr>
+      <tr><td class="label">BASE Owner Net (baseline ADR/Occ)</td><td id="kBaseOwner">—</td></tr>
+    </table>
+  </div>
+</div>
+
+    
+    <footer>© Desert Rose Partners — Owner Offer Suite (compact)</footer>
+  </div>
+
+<script type="module">
+import {initCohost} from './assets/app.js'; initCohost('unfurnished');
+</script>
+<script type="module" src="assets/app.js"></script>
+</body>
+</html>
