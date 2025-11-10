@@ -1,0 +1,41 @@
+
+:root {
+  --bg: #0d0e10;
+  --panel: #17181c;
+  --muted: #a7aab3;
+  --text: #e9e9ee;
+  --accent: #e7a75f;
+  --accent-2: #c38948;
+  --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono";
+  --round: 16px;
+}
+* { box-sizing: border-box; }
+html, body { background: var(--bg); color: var(--text); font-family: Inter, system-ui, Segoe UI, Roboto, Helvetica, Arial; }
+a { color: var(--accent); text-decoration: none; }
+a:hover { text-decoration: underline; }
+.container { max-width: 980px; margin: 32px auto 80px; padding: 0 16px; }
+.nav { font-size: 14px; opacity: .9; margin-bottom: 18px; }
+.nav a { margin-right: 14px; color: #c9c9d2; }
+.nav a.active { color: var(--text); font-weight: 600; }
+.card { background: var(--panel); border: 1px solid #23252b; border-radius: var(--round); padding: 18px; }
+.card + .card { margin-top: 16px; }
+.h { display:flex; align-items:center; justify-content:space-between; gap:12px; }
+.h .title { font-weight: 700; font-size: 22px; }
+.small { color: var(--muted); font-size: 13px; }
+.row { display:grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+@media(min-width: 880px){ .row{ grid-template-columns: 1fr 1fr 1fr; } }
+.grid { display:grid; grid-template-columns: repeat(4, 1fr); gap:8px; }
+.grid label { display:block; background:#1f2026; border:1px solid #2a2c33; border-radius:12px; padding:12px; font-size:13px; }
+.grid input[type=checkbox]{ margin-right:8px; }
+.field { display:flex; flex-direction: column; gap:6px; }
+.field input, .field select { background:#1a1b20; color: var(--text); border:1px solid #2a2c33; border-radius: 10px; padding:10px 12px; }
+.field input[type=number]{ font-family: var(--mono); }
+.btn { background: var(--accent); color: #111; border: 0; padding: 10px 14px; border-radius: 12px; font-weight: 700; cursor: pointer; }
+.btn:hover { background: var(--accent-2); }
+.table { width:100%; border-collapse: collapse; font-family: var(--mono); font-size: 13px;}
+.table th, .table td { border-top:1px solid #2a2c33; padding:8px 10px;}
+.table th { text-align:left; color: var(--muted); font-weight:600; }
+hr.sep { border:0; border-top:1px solid #2a2c33; margin: 10px 0 16px; }
+.badge { background:#23252b; border:1px solid #343741; padding:2px 8px; border-radius:999px; font-size:12px; color:#c9c9d2; }
+footer { margin-top: 28px; color: var(--muted); font-size: 12px; }
+legend { color:#c9c9d2; font-size: 13px; margin-bottom: 6px; }
