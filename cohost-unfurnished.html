@@ -1,13 +1,7 @@
-<!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Cohost — Unfurnished — DRP</title>
-<link rel="stylesheet" href="assets/css/styles.css">
-</head>
-<body data-page="cohost-unfur">
-<nav class="nav">
+<!doctype html><html lang="en"><head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cohost — Unfurnished — DRP</title><link rel="stylesheet" href="assets/css/styles.css"></head>
+<body data-page="cohost-unfur"><nav class="nav">
   <div class="brand"><div class="logo"></div><span>Desert Rose Partners</span></div>
   <div class="links">
     <a href="index.html">Home</a>
@@ -18,94 +12,44 @@
     <a href="README.html">Branching Steps</a>
   </div>
 </nav>
-<section class="hero container">
-  <div>
-    <div class="badge">Live estimate</div>
-    <h1>Cohost — Unfurnished</h1>
-    <p>Owners are partners here. Adjust ADR & occupancy, mark Ops Stops, include fixed costs—then calculate.</p>
-    <div class="note" style="margin-top:.6rem"><strong>Tip:</strong> <em>BASE Owner Net</em> (from neighborhood baseline) is usually the closest to reality.</div>
-    <button class="btn print-btn" onclick="window.print()">Print</button>
-  </div>
-  <img src="assets/img/banner-cohost.svg" alt="Estimator banner">
-</section>
-
+<section class="hero container"><div>
+  <h1>Cohost — Unfurnished</h1><p>Adjust ADR & occupancy, tick Ops Stops, edit fixed costs, then Calculate.</p>
+  <button class="btn print-btn" onclick="window.print()">Print</button>
+</div><img src="assets/img/banner-cohost.svg" alt="Estimator banner"></section>
 <div class="container section">
   <form id="calc-form" class="note">
     <div class="row">
-      <div>
-        <label for="neigh">Neighborhood</label>
-        <select id="neigh">
-          <option>Gueliz</option>
-          <option>Hivernage</option>
-          <option>Medina (car-accessible)</option>
-          <option>Palmeraie</option>
-          <option>Outskirts/Other</option>
-        </select>
-      </div>
-      <div>
-        <label for="unit">Unit</label>
-        <select id="unit">
-          <option>Studio</option>
-          <option>1BR</option>
-          <option>2BR</option>
-        </select>
-      </div>
+      <div><label for="neigh">Neighborhood</label>
+        <select id="neigh"><option>Gueliz</option><option>Hivernage</option><option>Medina (car-accessible)</option><option>Palmeraie</option><option>Outskirts/Other</option></select></div>
+      <div><label for="unit">Unit</label>
+        <select id="unit"><option>Studio</option><option>1BR</option><option>2BR</option></select></div>
     </div>
-
     <div class="row" style="margin-top:1rem">
-      <div>
-        <label for="adr">ADR (nightly rate, MAD)</label>
-        <input id="adr" type="number" min="0">
-        <small class="help">Loads baseline automatically; change if needed.</small>
-      </div>
-      <div>
-        <label for="occ">Occupancy (%)</label>
-        <input id="occ" type="number" min="0" max="100">
-        <small class="help">Loads baseline automatically; change if needed.</small>
-      </div>
+      <div><label for="adr">ADR (nightly rate, MAD)</label><input id="adr" type="number" min="0"><small class="help">Loads baseline; change if needed.</small></div>
+      <div><label for="occ">Occupancy (%)</label><input id="occ" type="number" min="0" max="100"><small class="help">Loads baseline; change if needed.</small></div>
     </div>
-
-    <div style="margin-top:1rem">
-      <strong>Ops Stops</strong>
-      <div class="ops">
-  <label title="Building where noise complaints are likely"><input type="checkbox" data-op="noise_sensitive"> Noise-sensitive building</label>
-  <label title="No elevator to reach the unit"><input type="checkbox" data-op="no_elevator"> No elevator</label>
-  <label title="We accept arrivals after 10–11pm regularly"><input type="checkbox" data-op="late_checkins"> We accept late-night check-ins</label>
-  <label title="Street/garage situation makes parking hard"><input type="checkbox" data-op="parking_difficult"> Parking is difficult</label>
-  <label title="We accept pets regularly"><input type="checkbox" data-op="pets_allowed"> We accept pets</label>
-</div>
-    </div>
-
-    <div class="row" style="margin-top:1rem">
-      <div><label><input id="fx-internet" type="checkbox" checked> Include Internet (MAD 300)</label></div>
-      <div><label><input id="fx-insurance" type="checkbox" checked> Include Insurance (MAD 120)</label></div>
-    </div>
-    <div style="margin-top:.5rem">
-      <label><input id="fx-hoa" type="checkbox"> Include HOA (owner-provided)</label>
-    </div>
-
-    <div style="margin-top:1rem">
-      <button id="calc" type="button" class="btn">Calculate</button>
-    </div>
+    <div style="margin-top:1rem"><strong>Ops Stops</strong><div id="ops-host" class="ops"></div></div>
+    <div style="margin-top:1rem"><strong>Fixed costs (monthly)</strong><div id="fixed-host"></div></div>
+    <div id="furnish-host"></div><details class="note" style="margin-top:1rem"><summary>Furnishing (optional)</summary>
+<p>If we furnish or project-manage furnishing, enter a budget and months to amortize. The monthly amortization is added to costs on Cohost and subtracted before the rent cap on Lease. You can uncheck it to compare scenarios instantly. We do <em>not</em> have to finance it—this is just a modeling switch.</p>
+</details>
+    <div style="margin-top:1rem">Avg stay (nights): <strong id="avgstay">3.0</strong></div>
+    <div style="margin-top:1rem"><button id="calc" type="button" class="btn">Calculate</button></div>
   </form>
+  <details class="note" style="margin-top:1rem"><summary>About this page</summary>
+<p>Ops Stops reduce ADR/Occupancy first → gross falls → cohost fee (a %) adjusts → then owner net. Variable expenses are per stay, multiplied by expected stays/month (rounded). Fixed costs are monthly and editable.</p>
+</details>
 </div>
-
 <div class="container section">
   <table class="table">
     <tr><th>Gross (ADR × nights × occ)</th><td id="kpi-gross">0</td></tr>
-    <tr><th>Cohost Fee (auto-adjusts with Ops Stops)</th><td id="kpi-fee">0</td></tr>
+    <tr><th>Cohost Fee</th><td id="kpi-fee">0</td></tr>
     <tr><th>Expected stays / month</th><td id="kpi-stays">0</td></tr>
-    <tr><th>Variable expenses (per stay)</th><td id="kpi-variable">0</td></tr>
+    <tr><th>Variable expenses (per stay total × stays)</th><td id="kpi-variable">0</td></tr>
     <tr><th>Fixed expenses (internet, insurance, HOA)</th><td id="kpi-fixed">0</td></tr>
+    <tr><th>Furnishing amortization</th><td id='kpi-furnish'>0</td></tr>
     <tr><th><strong>Owner Net</strong></th><td id="kpi-owner">0</td></tr>
-    <tr><th><strong>BASE Owner Net (from baseline)</strong></th><td id="kpi-base-owner">0</td></tr>
+    <tr><th><strong>BASE Owner Net (baseline ADR/Occ)</strong></th><td id="kpi-base-owner">0</td></tr>
   </table>
 </div>
-
-<footer class="footer"><div class="container">
-  © Desert Rose Partners — Owner Offer Suite v2.4
-</div></footer>
-<script src="assets/js/data.js"></script>
-<script src="assets/js/site.js"></script>
-</body>
-</html>
+<footer class="footer"><div class="container">© Desert Rose Partners — Owner Offer Suite v2.7.1</div></footer><script src="assets/js/data.js"></script><script src="assets/js/site.js"></script></body></html>
