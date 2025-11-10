@@ -1,111 +1,85 @@
 <!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Cohost — Furnished — DRP</title>
-<link rel="stylesheet" href="assets/css/styles.css">
+<html lang="en"><head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Cohost — Furnished</title>
+<link rel="stylesheet" href="assets/style.css"/>
+<script src="assets/baselines.js"></script>
+<script src="assets/offer.js"></script>
 </head>
-<body data-page="cohost-fur">
-<nav class="nav">
-  <div class="brand"><div class="logo"></div><span>Desert Rose Partners</span></div>
-  <div class="links">
+<body>
+<div class="header">
+  <div class="brand">Desert Rose Partners</div>
+  <nav class="nav">
     <a href="index.html">Home</a>
     <a href="cohost-furnished.html">Cohost — Furnished</a>
     <a href="cohost-unfurnished.html">Cohost — Unfurnished</a>
-    <a href="lease-furnished.html">Lease to Us — Furnished</a>
-    <a href="lease-unfurnished.html">Lease to Us — Unfurnished</a>
-    <a href="README.html">Branching Steps</a>
+    <a href="lease-furnished.html">Lease — Furnished</a>
+    <a href="lease-unfurnished.html">Lease — Unfurnished</a>
+  </nav>
+</div>
+<div class="wrap">
+  <h1>Cohost — Furnished</h1>
+  <div class="workspace">
+    <div class="card">
+      <h3 class="panel-title">Neighborhood & Unit</h3>
+      <div class="field"><label class="small">Neighborhood</label><select id="nSel"></select></div>
+      <div class="field"><label class="small">Unit</label><select id="uSel"></select></div>
+      <div class="field"><div class="badge">ADR & occupancy load from neighborhood baselines automatically.</div></div>
+      <hr class="sep"/>
+      <h3 class="panel-title">Fixed costs (monthly)</h3>
+      <div class="field switch"><input type="checkbox" id="chkInternet" checked/><label for="chkInternet">Internet</label></div>
+      <div class="row"><div></div><input id="internetMad" type="number" value="300"/></div>
+      <div class="field switch"><input type="checkbox" id="chkInsurance" checked/><label for="chkInsurance">Insurance</label></div>
+      <div class="row"><div></div><input id="insuranceMad" type="number" value="120"/></div>
+      <div class="field switch"><input type="checkbox" id="chkHoa"/><label for="chkHoa">HOA</label></div>
+      <div class="row"><div></div><input id="hoaMad" type="number" value="0"/></div>
+      <hr class="sep"/>
+      <div class="field"><label class="small">Cohost fee %</label><input id="feePct" type="number" value="22" step="1"/></div>
+      <div class="field"><label class="small">Avg stay (nights)</label><input id="avgN" type="number" step="0.1" value="3.0"/></div>
+      <button class="btn" id="btnCalc">Calculate</button>
+    </div>
+    <div class="card">
+      <h3 class="panel-title">Ops Stops (check if common)</h3>
+      <div class="checkbox-grid">
+        <label class="switch"><input id="op-noise" type="checkbox"/> Noise-sensitive building</label>
+        <label class="switch"><input id="op-stairs" type="checkbox"/> Stairs only (no elevator)</label>
+        <label class="switch"><input id="op-parking" type="checkbox"/> Parking is difficult</label>
+        <label class="switch"><input id="op-hoa" type="checkbox"/> Strict HOA / building rules</label>
+        <label class="switch"><input id="op-gated" type="checkbox"/> Gated/complex access</label>
+        <label class="switch"><input id="op-hard" type="checkbox"/> Hard-to-find address / maze-like</label>
+        <label class="switch"><input id="op-noself" type="checkbox"/> No self check-in (in-person handoff)</label>
+        <label class="switch"><input id="op-delicate" type="checkbox"/> Delicate finishes (extra care)</label>
+      </div>
+      
+    </div>
+    <div class="card results">
+      <h3 class="panel-title">Owner Net (estimated)</h3>
+      <div class="kv"><span>Gross (ADR × nights × occ)</span><b id="out-gross">—</b></div>
+      <div class="kv"><span>Expected stays / month</span><b id="out-stays">—</b></div>
+      <div class="kv"><span>Variable expenses (per stay × stays)</span><b id="out-var">—</b></div>
+      <div class="kv"><span>Cohost Fee</span><b id="out-fee">—</b></div>
+      <div class="kv"><span>Fixed expenses</span><b id="out-fixed">—</b></div>
+      <div class="kv"><span>Owner Net</span><b id="out-owner">—</b></div>
+      <div class="kv dim"><span>BASE Owner Net (baseline ADR/Occ)</span><b id="out-base">—</b></div>
+    </div>
   </div>
-</nav>
-<section class="hero container">
-  <div>
-    <div class="badge">Live estimate</div>
-    <h1>Cohost — Furnished</h1>
-    <p>Owners are partners here. Adjust ADR & occupancy, mark Ops Stops, include fixed costs—then calculate.</p>
-    <div class="note" style="margin-top:.6rem"><strong>Tip:</strong> <em>BASE Owner Net</em> (from neighborhood baseline) is usually the closest to reality.</div>
-    <button class="btn print-btn" onclick="window.print()">Print</button>
-  </div>
-  <img src="assets/img/banner-cohost.svg" alt="Estimator banner">
-</section>
-
-<div class="container section">
-  <form id="calc-form" class="note">
-    <div class="row">
-      <div>
-        <label for="neigh">Neighborhood</label>
-        <select id="neigh">
-          <option>Gueliz</option>
-          <option>Hivernage</option>
-          <option>Medina (car-accessible)</option>
-          <option>Palmeraie</option>
-          <option>Outskirts/Other</option>
-        </select>
-      </div>
-      <div>
-        <label for="unit">Unit</label>
-        <select id="unit">
-          <option>Studio</option>
-          <option>1BR</option>
-          <option>2BR</option>
-        </select>
-      </div>
-    </div>
-
-    <div class="row" style="margin-top:1rem">
-      <div>
-        <label for="adr">ADR (nightly rate, MAD)</label>
-        <input id="adr" type="number" min="0">
-        <small class="help">Loads baseline automatically; change if needed.</small>
-      </div>
-      <div>
-        <label for="occ">Occupancy (%)</label>
-        <input id="occ" type="number" min="0" max="100">
-        <small class="help">Loads baseline automatically; change if needed.</small>
-      </div>
-    </div>
-
-    <div style="margin-top:1rem">
-      <strong>Ops Stops</strong>
-      <div class="ops">
-  <label title="Building where noise complaints are likely"><input type="checkbox" data-op="noise_sensitive"> Noise-sensitive building</label>
-  <label title="No elevator to reach the unit"><input type="checkbox" data-op="no_elevator"> No elevator</label>
-  <label title="We accept arrivals after 10–11pm regularly"><input type="checkbox" data-op="late_checkins"> We accept late-night check-ins</label>
-  <label title="Street/garage situation makes parking hard"><input type="checkbox" data-op="parking_difficult"> Parking is difficult</label>
-  <label title="We accept pets regularly"><input type="checkbox" data-op="pets_allowed"> We accept pets</label>
+  <footer>© Desert Rose Partners — Owner Offer Suite (compact)</footer>
 </div>
-    </div>
-
-    <div class="row" style="margin-top:1rem">
-      <div><label><input id="fx-internet" type="checkbox" checked> Include Internet (MAD 300)</label></div>
-      <div><label><input id="fx-insurance" type="checkbox" checked> Include Insurance (MAD 120)</label></div>
-    </div>
-    <div style="margin-top:.5rem">
-      <label><input id="fx-hoa" type="checkbox"> Include HOA (owner-provided)</label>
-    </div>
-
-    <div style="margin-top:1rem">
-      <button id="calc" type="button" class="btn">Calculate</button>
-    </div>
-  </form>
-</div>
-
-<div class="container section">
-  <table class="table">
-    <tr><th>Gross (ADR × nights × occ)</th><td id="kpi-gross">0</td></tr>
-    <tr><th>Cohost Fee (auto-adjusts with Ops Stops)</th><td id="kpi-fee">0</td></tr>
-    <tr><th>Expected stays / month</th><td id="kpi-stays">0</td></tr>
-    <tr><th>Variable expenses (per stay)</th><td id="kpi-variable">0</td></tr>
-    <tr><th>Fixed expenses (internet, insurance, HOA)</th><td id="kpi-fixed">0</td></tr>
-    <tr><th><strong>Owner Net</strong></th><td id="kpi-owner">0</td></tr>
-    <tr><th><strong>BASE Owner Net (from baseline)</strong></th><td id="kpi-base-owner">0</td></tr>
-  </table>
-</div>
-
-<footer class="footer"><div class="container">
-  © Desert Rose Partners — Owner Offer Suite v2.4
-</div></footer>
-<script src="assets/js/data.js"></script>
-<script src="assets/js/site.js"></script>
-</body>
-</html>
+<script>
+DRP.fillNeighborhoodUnit('#nSel','#uSel');
+function opsSel(key){ return document.getElementById('op-'+key); }
+const els={gross:byId('out-gross'),stays:byId('out-stays'),varMonthly:byId('out-var'),fee:byId('out-fee'),fixed:byId('out-fixed'),ownerNet:byId('out-owner'),baseOwner:byId('out-base')};
+function byId(id){return document.getElementById(id);}
+function moneyInput(chkId,valId){return ()=> (byId(chkId).checked? Number(byId(valId).value||0):0);}
+byId('btnCalc').addEventListener('click',()=>{
+  DRP.cohostCalc({neighborhoodSel:'#nSel',unitSel:'#uSel',opsSel,
+    internet:moneyInput('chkInternet','internetMad'),
+    insurance:moneyInput('chkInsurance','insuranceMad'),
+    hoa:moneyInput('chkHoa','hoaMad'),
+    feePct:()=> Number(byId('feePct').value||22),
+    avgNights:()=> Number(byId('avgN').value||DRP.DEFAULT_AVG_NIGHTS),
+    outEls:els
+  });
+});
+</script>
+</body></html>
