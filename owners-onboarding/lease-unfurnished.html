@@ -1,0 +1,72 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Lease to Us — Unfurnished (compact)</title>
+<link rel="stylesheet" href="assets/style.css"/>
+</head>
+<body class="compact">
+  <div class="nav">
+    <div class="brand">Desert Rose Partners</div>
+    <a href="index.html">Home</a>
+    <a href="cohost-furnished.html">Cohost — Furnished</a>
+    <a href="cohost-unfurnished.html">Cohost — Unfurnished</a>
+    <a href="lease-furnished.html">Lease to Us — Furnished</a>
+    <a href="lease-unfurnished.html">Lease to Us — Unfurnished</a>
+  </div>
+
+  <div class="wrap">
+    
+    <h1>Lease to Us — Unfurnished</h1>
+    <div class="grid-3">
+      <div class="panel">
+        <div class="card">
+          <h2>Neighborhood & Unit</h2>
+          <div class="row">
+            <div><small class="label">Neighborhood</small><select id="nb"></select></div>
+            <div><small class="label">Unit</small><select id="unit"></select></div>
+          </div>
+        </div>
+        <div class="card">
+          <h2>Include furnishing amortization</h2>
+          <div class="row">
+            <label class="kpi"><input id="amortOn" type="checkbox" checked><span class="label">Amortize</span></label>
+            <div></div>
+          </div>
+          <div class="row">
+            <div><small class="label">Budget (MAD)</small><input id="amortBudget" type="number" min="0" value="30000"/></div>
+            <div><small class="label">Months</small><input id="amortMonths" type="number" min="1" value="24"/></div>
+          </div>
+          <div style="margin-top:10px"><button id="calc" class="btn">Calculate</button></div>
+          <div class="muted" style="margin-top:8px">Tip: uncheck if owner furnishes (you don't finance).</div>
+        </div>
+      </div>
+      <div class="card" id="opsBox">
+        <h2>Ops Stops (check if common)</h2>
+      </div>
+      <div class="card results">
+        <h2>Suggested rent (offer)</h2>
+        <div class="big" id="kOffer">—</div>
+        <div class="muted" style="margin:6px 0 10px">MAD / month</div>
+        <table>
+          <tr><td class="label">Gross</td><td id="kGross">—</td></tr>
+          <tr><td class="label">Expected stays / month</td><td id="kStays">—</td></tr>
+          <tr><td class="label">Variable expenses (per stay)</td><td id="kVar">—</td></tr>
+          <tr><td class="label">Fixed expenses (assumed)</td><td id="kFixed">0</td></tr>
+          <tr><td class="label">Target margin</td><td id="kMargin">—</td></tr>
+          <tr><td class="label">Rent cap (after ops penalties)</td><td id="kRentCap">—</td></tr>
+          <tr><td class="label">Avg stay (nights)</td><td id="kAvgStay">—</td></tr>
+        </table>
+      </div>
+    </div>
+    
+    <footer>© Desert Rose Partners — Owner Offer Suite (compact)</footer>
+  </div>
+
+<script type="module">
+import {initLease} from './assets/app.js'; initLease(true);
+</script>
+<script type="module" src="assets/app.js"></script>
+</body>
+</html>
